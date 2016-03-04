@@ -11,7 +11,7 @@
 NUMBER_OF_BACKUPS_TO_KEEP=10
 S3_BUCKETNAME=
 JENKINS_HOME=/var/lib/jenkins
-RESTORE_SCRIPT_PATH="$PWD/jenkins_restore_frombackup.sh"
+RESTORE_SCRIPT_PATH="$PWD/jenkins_restore_template.sh"
 
 #BACKUP_PATH="/path/to/backup/directory" # do not include trailing slash
 BACKUP_PATH="/home/jenkins/jenkins_backups"
@@ -36,7 +36,7 @@ if [ -d "$BACKUP_PATH" ]; then
 	cd $BACKUP_PATH
 
 	# initialize temp backup directory
-	TMP_BACKUP_DIR="jenkins-$TODAYS_DATE"
+	TMP_BACKUP_DIR="$BACKUP_PATH/jenkins-$TODAYS_DATE"
 
   ### Print out what we shall do
   echo "Starting Jenkins backup on `hostname -s` at `date +'%d-%b-%Y %H:%M:%S %Z'`"
@@ -138,14 +138,15 @@ if [ -d "$BACKUP_PATH" ]; then
 		FILE_NAME="${FILE_NAME//DATE/$TODAYS_DATETIME}"
 
 		# turn dumped files into a single tar file
-		$TAR_BIN_PATH --remove-files -czf $BACKUP_PATH/$FILE_NAME.tar.gz $TMP_BACKUP_DIR >> /dev/null
+		cd $TMP_BACKUP_DIR
+		$TAR_BIN_PATH --remove-files -czf $BACKUP_PATH/$FILE_NAME.tar.gz . >> /dev/null
 
 		# verify that the file was created
 		if [ -f "$BACKUP_PATH/$FILE_NAME.tar.gz" ]; then
 			echo "=> Success: `du -sh $FILE_NAME.tar.gz`"; echo;
 
-			if [ -d "$BACKUP_PATH/$TMP_BACKUP_DIR" ]; then
-				rm -rf "$BACKUP_PATH/$TMP_BACKUP_DIR"
+			if [ -d "$TMP_BACKUP_DIR" ]; then
+				rm -rf "$TMP_BACKUP_DIR"
 			fi
 
 			( cd $BACKUP_PATH ; ls -1tr | head -n -$NUMBER_OF_BACKUPS_TO_KEEP | xargs -d '\n' rm -f )
