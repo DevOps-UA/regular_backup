@@ -138,10 +138,10 @@ if [ -d "$BACKUP_PATH" ]; then
 		FILE_NAME="${FILE_NAME//DATE/$TODAYS_DATETIME}"
 
 		# turn dumped files into a single tar file
-		$TAR_BIN_PATH --remove-files -czf $FILE_NAME.tar.gz $TMP_BACKUP_DIR >> /dev/null
+		$TAR_BIN_PATH --remove-files -czf $BACKUP_PATH/$FILE_NAME.tar.gz $TMP_BACKUP_DIR >> /dev/null
 
 		# verify that the file was created
-		if [ -f "$FILE_NAME.tar.gz" ]; then
+		if [ -f "$BACKUP_PATH/$FILE_NAME.tar.gz" ]; then
 			echo "=> Success: `du -sh $FILE_NAME.tar.gz`"; echo;
 
 			if [ -d "$BACKUP_PATH/$TMP_BACKUP_DIR" ]; then
