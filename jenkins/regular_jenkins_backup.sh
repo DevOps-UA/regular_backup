@@ -112,6 +112,7 @@ if [ -d "$BACKUP_PATH" ]; then
   if [[ -d "${JENKINS_HOME}/jobs/" ]]; then
     cd "${JENKINS_HOME}/jobs/"
     ls -1 | while read JOB_NAME; do
+			echo "Backing up $JOB_NAME"
       mkdir -p "${TMP_BACKUP_DIR}/jobs/${JOB_NAME}/"
       find "${JENKINS_HOME}/jobs/${JOB_NAME}/" -maxdepth 1 -name "*.xml" | xargs -I {} cp {} "${TMP_BACKUP_DIR}/jobs/${JOB_NAME}/"
     done
