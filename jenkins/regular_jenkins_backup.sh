@@ -1,7 +1,7 @@
 #!/bin/bash
 #
-# Add to cron
-# */15 * * * * /home/jenkins/regular_jenkins_backup.sh
+# Add to cron - daily at 01:00 AM
+# 0 1 * * * /var/lib/jenkins/cron_jobs/regular_jenkins_backup.sh > /dev/null
 # returns 0 in case of success and 1 in case of failure
 
 # Requires external tool s3cmd preconfigured for current user
@@ -154,8 +154,8 @@ if [ -d "$BACKUP_PATH" ]; then
                         if [[ ! -z $S3_BUCKETNAME ]]; then
 
                           echo "=> In progress: Uploading to S3"; echo;
-                          echo s3cmd put $FILE_NAME.tar.gz s3://$S3_BUCKETNAME/
-                          s3cmd put $FILE_NAME.tar.gz s3://$S3_BUCKETNAME/
+                          echo s3cmd put $BACKUP_PATH/$FILE_NAME.tar.gz s3://$S3_BUCKETNAME/
+                          s3cmd put $BACKUP_PATH/$FILE_NAME.tar.gz s3://$S3_BUCKETNAME/
                           echo "=> command executed"
 
                         fi
