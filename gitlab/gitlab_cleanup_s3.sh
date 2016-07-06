@@ -4,7 +4,8 @@
 
 # Removes backups older than N days from S3 bucket using s3cmd tool
 
-s3cmd ls s3://$1 | while read -r line;
+echo s3cmd ls s3://$1/*
+s3cmd ls s3://$1/* | while read -r line;
   do
     createDate=`echo $line|awk {'print $1" "$2'}`
     createDate=`date -d"$createDate" +%s`
